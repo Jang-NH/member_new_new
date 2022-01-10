@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>FindAll</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script>
+        function detail(memberId) {
+            console.log(memberId);
+            const reqUrl = "/member/" + memberId;
+            $.ajax({
+                type: 'post',
+                url: reqUrl,
+                dataType: 'json',
+                success: function (result) {
+                    console.log(result);
+                    let output = '';
+                    output += "<table>\n" +
+                        "    <thead>\n" +
+                        "        <tr>\n" +
+                        "            <th>번호</th>\n" +
+                        "            <th>이메일</th>\n" +
+                        "            <th>비밀번호</th>\n" +
+                        "            <th>이름</th>\n" +
+                        "        </tr>\n" +
+                        "    </thead>\n" +
+                        "    <tbody>\n" +
+                        "        <tr>\n" +
+                        "            <td>" + result.memberId + "</td>\n" +
+                        "            <td>" + result.memberEmail + "</td>\n" +
+                        "            <td>" + result.memberPassword + "</td>\n" +
+                        "            <td>" + result.memberName + "</td>\n" +
+                        "        </tr>\n" +
+                        "    </tbody>\n" +
+                        "</table>";
+                    document.getElementById("detail-view").innerHTML = output;
+                },
+                error: function () {
+                    alert('ajax 실패');
+                }
+            });
+        }
+
+        function deleteById(memberId) {
+            console.log(memberId);
+            const reqUrl = "/member/" + memberId;
+            $.ajax({
+                type: 'delete',
+                url: reqUrl,
+                success : function () {     // 받아올 데이터가 없으니 dataType 필요 X, ()안에 값 X
+                    // 삭제 성공시 회원목록 페이지 다시 요청
+                    location.href = '/member/';
+                },
+                error: function () {
+                    alert('ajax 실패');
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<h2>findAll.html</h2>
+<table>
+    <thead>
+    <tr>
+        <th>번호</th>
+        <th>이메일</th>
+        <th>비밀번호</th>
+        <th>이름</th>
+        <th>조회</th>
+        <th>조회(ajax)</th>
+        <th>삭제(get)</th>
+        <th>삭제(delete)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="member: ${memberList}">
+        <td th:text="${member.memberId}">번호</td>
+        <td th:text="${member.memberEmail}">이메일</td>
+        <td th:text="${member.memberPassword}">비밀번호</td>
+        <td th:text="${member.memberName}">이름</td>
+        <td><a th:href="@{|/member/${member.memberId}|}">조회</a></td>
+        <td><button th:onclick="detail([[${member.memberId}]])">조회(ajax)</button></td>
+        <td><a th:href="@{|/member/delete/${member.memberId}|}">삭제(get)</a></td>
+        <td><button th:onclick="deleteById([[${member.memberId}]])">삭제(delete)</button></td>
+    </tr>
+    </tbody>
+</table>
+<div id="detail-view"></div>
+</body>
+</html>
