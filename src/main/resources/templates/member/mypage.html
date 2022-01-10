@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>MyPage</title>
+</head>
+<body>
+<h2>mypage.html</h2>
+세션값 : <p th:text="${session['loginEmail']}"></p> // div, p 태그는 block 요소 & a, span, input 은 인라인 요소
+<a href="/member/update">정보수정</a>
+</body>
+</html>
