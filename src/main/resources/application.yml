@@ -18,3 +18,10 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: create
+
+# mybatis 관련 설정
+mybatis:
+  # resources/mapper/ 에 있는 모든 xml 파일
+  mapper-locations: mapper/*.xml
+  # alias 설정
+  type-aliases-package: com.icia.member.dto

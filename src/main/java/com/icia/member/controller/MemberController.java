@@ -26,6 +26,7 @@ public class MemberController {
     // 회원가입 폼
     @GetMapping("save")
     public String saveForm() {
+
         return "member/save";
     }
 
@@ -39,21 +40,32 @@ public class MemberController {
     // 로그인 폼
     @GetMapping("login")
     public String loginForm() {
+
         return "member/login";
     }
 
     // 로그인
     @PostMapping("login")
-    public String login(@ModelAttribute MemberLoginDTO memberLoginDTO, HttpSession session) {
+    public String login(@ModelAttribute MemberLoginDTO memberLoginDTO, HttpSession session, @RequestParam(defaultValue = "/") String redirectURL) {
+        System.out.println("MemberController.login");
+        System.out.println("redirectURL = " + redirectURL);
         boolean loginResult = ms.login(memberLoginDTO);
         if(loginResult) {
             session.setAttribute(LOGIN_EMAIL, memberLoginDTO.getMemberEmail());
 //            return "redirect:/member/";
-            return "member/mypage";
+//            return "member/mypage";
+            return "redirect:" + redirectURL; // 사용자가 요청한 주소로 보내주기 위해
         } else {
             return "member/login";
 
         }
+    }
+
+    // 로그아웃
+    @GetMapping("logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/";
     }
 
     // 회원목록
@@ -115,11 +127,13 @@ public class MemberController {
         return "redirect:/member/" + memberDetailDTO.getMemberId();
     }
 
-    // 수정처리 (put)
-    @PutMapping("{memberId")
-    // json 으로 데이터가 전달되면 @RequestBody로 받아줘야함.
-    public ResponseEntity update2(@RequestBody MemberDetailDTO memberDetailDTO) {
-        Long memberId = ms.update(memberDetailDTO);
-        return new ResponseEntity(HttpStatus.OK);
-    }
+    // Test 수행시 주석처리 할 것 (안하면 오류남)
+
+//    // 수정처리 (put)
+//    @PutMapping("{memberId")
+//    // json 으로 데이터가 전달되면 @RequestBody로 받아줘야함.
+//    public ResponseEntity update2(@RequestBody MemberDetailDTO memberDetailDTO) {
+//        Long memberId = ms.update(memberDetailDTO);
+//        return new ResponseEntity(HttpStatus.OK);
+//    }
 }
